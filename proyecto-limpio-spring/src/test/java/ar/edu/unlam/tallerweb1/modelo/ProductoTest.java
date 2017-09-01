@@ -19,7 +19,7 @@ public class ProductoTest extends SpringTest {
 	@Test
 	@Transactional
 	@Rollback(true)
-	public void testProducto() {
+	public void testProducto1() {
 		
 		Producto producto1 = new Producto();
 		producto1.setPrecio(1000d);
@@ -137,6 +137,50 @@ public class ProductoTest extends SpringTest {
 		assertThat(listadoProductos).hasSize(1); 					
 	
 	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testProducto4() {
+		
+		Producto producto1 = new Producto();
+		producto1.setPrecio(33d);
+		producto1.setTitulo("Tv");
+		producto1.setDescripcion("32 pulgadas");
+		producto1.setCantidad(8);
+		
+		Producto producto2 = new Producto();
+		producto2.setPrecio(44d);
+		producto2.setTitulo("Tv");
+		producto2.setDescripcion(null);
+		producto2.setCantidad(3);
+		
+		Producto producto3 = new Producto();
+		producto3.setPrecio(350d);
+		producto3.setTitulo("Tv");
+		producto3.setDescripcion("tubo");
+		producto3.setCantidad(14);
+			
+		getSession().save(producto1);
+		getSession().save(producto2);
+		getSession().save(producto3);
+
+		Session s = getSession();
+		
+		List<Producto> listadoProductos;
+		
+		// -- 4. Todos los productos con precio de 33 o 44 -- //
+		
+		listadoProductos = s.createCriteria(Producto.class)
+				
+							//restriccion para que el precio sea 33 O 44, usamos el .or y en cada campo ponemos una restriccion para un valor diferente
+							.add(Restrictions.or(Restrictions.eq("precio", 33d), Restrictions.eq("precio", 44d)))
+							.list();
+			
+		assertThat(listadoProductos).hasSize(2); 					
+	
+	}
+
 
 
 	
