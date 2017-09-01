@@ -230,7 +230,85 @@ public class ProductoTest extends SpringTest {
 		assertThat(listadoProductos.get(0).getPrecio()).isEqualTo(300d);  //el que quedo en el primer lugar es el producto3 con precio 300
 		assertThat(listadoProductos).hasSize(3);  //que se hayan traido los 3 productos 	
 
+	}
 	
+
+	@SuppressWarnings("unchecked")
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testProducto6() {
+		
+		//creo un objeto producto
+		Producto producto1 = new Producto();
+		producto1.setPrecio(1000d);
+		producto1.setTitulo("Tv");
+		producto1.setDescripcion("32 pulgadas");
+		producto1.setCantidad(8);
+		
+		//creo otro objeto producto
+		Producto producto2 = new Producto();
+		producto2.setPrecio(500d);
+		producto2.setTitulo("Tv");
+		producto2.setDescripcion("25 pulgadas");
+		producto2.setCantidad(2);
+		
+		//creo un objeto usuario
+		UsuarioVendedorComprador usuario1 = new UsuarioVendedorComprador();
+		usuario1.setNombre("Juan");
+		usuario1.setApellido("Perez");
+		usuario1.setEdad(30);
+		
+		//creo otro objeto usuario
+		UsuarioVendedorComprador usuario2 = new UsuarioVendedorComprador();
+		usuario2.setNombre("Pedro");
+		usuario2.setApellido("Rodriguez");
+		usuario2.setEdad(40);
+		
+		//creo un objeto categoria
+		Categoria categoria1 = new Categoria();
+		categoria1.setNombreCategoria("electronica");
+		
+		//creo un objeto oferta
+		Oferta oferta1 = new Oferta();
+		oferta1.setCantidad(1);
+		//creo un objeto oferta
+		Oferta oferta2 = new Oferta();
+		oferta2.setCantidad(1);
+
+		producto1.setUsuarioVendedor(usuario1);  			//al producto1 le seteo como vendedor al usuario1
+		producto2.setUsuarioVendedor(usuario1);  			//al producto2 le seteo como vendedor al usuario1
+		producto1.setCategoriaPerteneciente(categoria1); 	//al producto1 le seteo como categoriaPerteneciente la categoria1
+		producto2.setCategoriaPerteneciente(categoria1); 	//al producto2 le seteo como categoriaPerteneciente la categoria1
+		oferta1.setProductoOfertado(producto1);				//al objeto oferta1 le seteo como productoOfertado el producto1
+		oferta2.setProductoOfertado(producto2);				//al objeto oferta1 le seteo como productoOfertado el producto1
+		
+		oferta2.setUsuarioComprador(usuario2);				//la oferta2 es comprada por el usuario2
+
+		getSession().save(producto1);
+		getSession().save(producto2);
+		getSession().save(usuario1);
+		getSession().save(usuario2);
+		getSession().save(categoria1);
+		getSession().save(oferta1);
+		getSession().save(oferta2);
+
+		Session s = getSession();
+		
+	
+		// --- 6. Todos los productos vendidos por un usuario x -- //
+			
+		//-- Me trae todos los productos publicados por el usuario Juan -- 
+		
+		List<Producto> lista;
+		
+		lista = s.createCriteria(Producto.class)
+				.createAlias("usuarioVendedor", "vendedor")  //creo un alias para poder traer el nombre del vendedor
+				.add(Restrictions.eq("vendedor.nombre", "Juan"))	
+				.list();
+		
+		assertThat(lista).hasSize(2); 
+
 	}
 
 

@@ -28,6 +28,7 @@ public class Producto {
 	
 	@ManyToOne (fetch = FetchType.LAZY) //MUCHOS productos publicados por UN usuario
 	@JoinColumn (name="idUsuario") //columna con la cual se va a joinear
+	
 	private UsuarioVendedorComprador usuarioVendedor;
 	
 	
@@ -85,6 +86,12 @@ public class Producto {
 	}
 	public void setCategoriaPerteneciente(Categoria categoriaPerteneciente) {
 		this.categoriaPerteneciente = categoriaPerteneciente;
+	}
+	public List<Oferta> getOfertasDeProducto() {
+		return ofertasDeProducto;
+	}
+	public void setOfertasDeProducto(List<Oferta> ofertasDeProducto) {
+		this.ofertasDeProducto = ofertasDeProducto;
 	}
 	
 	

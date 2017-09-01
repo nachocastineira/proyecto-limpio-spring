@@ -24,7 +24,7 @@ public class Oferta {
 	
 	@ManyToOne (fetch = FetchType.LAZY)
 	@JoinColumn (name="idUsuario")
-	private Usuario usuarioComprador;
+	private UsuarioVendedorComprador usuarioComprador;
 
 
 	
@@ -53,14 +53,15 @@ public class Oferta {
 		this.productoOfertado = productoOfertado;
 	}
 
-	public Usuario getUsuarioComprador() {
+	public UsuarioVendedorComprador getUsuarioComprador() {
 		return usuarioComprador;
 	}
 
-	public void setUsuarioComprador(Usuario usuarioComprador) {
+	public void setUsuarioComprador(UsuarioVendedorComprador usuarioComprador) {
 		this.usuarioComprador = usuarioComprador;
 	}
-	
+
+
 	
 	
 
