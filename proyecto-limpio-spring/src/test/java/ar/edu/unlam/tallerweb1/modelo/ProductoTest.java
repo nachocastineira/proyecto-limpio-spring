@@ -1,11 +1,12 @@
 package ar.edu.unlam.tallerweb1.modelo;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 import java.util.List;
 
+
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
@@ -16,6 +17,7 @@ import ar.edu.unlam.tallerweb1.SpringTest;
 public class ProductoTest extends SpringTest {
 
 
+	@SuppressWarnings("unchecked") //si no pongo esto me tira un warning en la consulta
 	@Test
 	@Transactional
 	@Rollback(true)
@@ -61,6 +63,7 @@ public class ProductoTest extends SpringTest {
 	
 	
 
+	@SuppressWarnings("unchecked")
 	@Test
 	@Transactional
 	@Rollback(true)
@@ -96,6 +99,7 @@ public class ProductoTest extends SpringTest {
 	
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	@Transactional
 	@Rollback(true)
@@ -138,6 +142,8 @@ public class ProductoTest extends SpringTest {
 	
 	}
 	
+
+	@SuppressWarnings("unchecked")
 	@Test
 	@Transactional
 	@Rollback(true)
@@ -180,6 +186,53 @@ public class ProductoTest extends SpringTest {
 		assertThat(listadoProductos).hasSize(2); 					
 	
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testProducto5() {
+		
+		Producto producto1 = new Producto();
+		producto1.setPrecio(100d);
+		producto1.setTitulo("Tv");
+		producto1.setDescripcion("32 pulgadas");
+		producto1.setCantidad(8);
+		
+		Producto producto2 = new Producto();
+		producto2.setPrecio(200d);
+		producto2.setTitulo("Tv");
+		producto2.setDescripcion(null);
+		producto2.setCantidad(3);
+		
+		Producto producto3 = new Producto();
+		producto3.setPrecio(300d);
+		producto3.setTitulo("Tv");
+		producto3.setDescripcion("tubo");
+		producto3.setCantidad(14);
+			
+		getSession().save(producto1);
+		getSession().save(producto2);
+		getSession().save(producto3);
+
+		Session s = getSession();
+		
+		List<Producto> listadoProductos;
+		
+		
+		// -- 5. Todos los productos ordenados por precio descendente -- //
+		
+		listadoProductos = s.createCriteria(Producto.class)
+							.addOrder(Order.desc("precio")) //los precios se van a ordernar de forma descendente
+							.list();
+			
+
+		assertThat(listadoProductos.get(0).getPrecio()).isEqualTo(300d);  //el que quedo en el primer lugar es el producto3 con precio 300
+		assertThat(listadoProductos).hasSize(3);  //que se hayan traido los 3 productos 	
+
+	
+	}
+
 
 
 
