@@ -310,7 +310,244 @@ public class ProductoTest extends SpringTest {
 		assertThat(lista).hasSize(2); 
 
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testProducto7() {
+		
+		//creo un objeto producto
+		Producto producto1 = new Producto();
+		producto1.setPrecio(100d);
+		producto1.setTitulo("Tv");
+		producto1.setDescripcion("32 pulgadas");
+		producto1.setCantidad(8);
+		
+		//creo otro objeto producto
+		Producto producto2 = new Producto();
+		producto2.setPrecio(500d);
+		producto2.setTitulo("Tv");
+		producto2.setDescripcion("25 pulgadas");
+		producto2.setCantidad(2);
+		
+		//creo un objeto usuario
+		UsuarioVendedorComprador usuario1 = new UsuarioVendedorComprador();
+		usuario1.setNombre("Jose");
+		usuario1.setApellido("Perez");
+		usuario1.setEdad(30);
+		
+		//creo otro objeto usuario
+		UsuarioVendedorComprador usuario2 = new UsuarioVendedorComprador();
+		usuario2.setNombre("Pedro");
+		usuario2.setApellido("Rodriguez");
+		usuario2.setEdad(40);
+		
+		//creo un objeto categoria
+		Categoria categoria1 = new Categoria();
+		categoria1.setNombreCategoria("electronica");
+		
+		//creo un objeto oferta
+		Oferta oferta1 = new Oferta();
+		oferta1.setCantidad(1);
+		//creo un objeto oferta
+		Oferta oferta2 = new Oferta();
+		oferta2.setCantidad(1);
 
+		producto1.setUsuarioVendedor(usuario1);  			//al producto1 le seteo como vendedor al usuario1
+		producto2.setUsuarioVendedor(usuario1);  			//al producto2 le seteo como vendedor al usuario1
+		producto1.setCategoriaPerteneciente(categoria1); 	//al producto1 le seteo como categoriaPerteneciente la categoria1
+		producto2.setCategoriaPerteneciente(categoria1); 	//al producto2 le seteo como categoriaPerteneciente la categoria1
+		oferta1.setProductoOfertado(producto1);				//al objeto oferta1 le seteo como productoOfertado el producto1
+		oferta2.setProductoOfertado(producto2);				//al objeto oferta1 le seteo como productoOfertado el producto1
+		
+		oferta2.setUsuarioComprador(usuario2);				//la oferta2 es comprada por el usuario2
+
+		getSession().save(producto1);
+		getSession().save(producto2);
+		getSession().save(usuario1);
+		getSession().save(usuario2);
+		getSession().save(categoria1);
+		getSession().save(oferta1);
+		getSession().save(oferta2);
+
+		Session s = getSession();
+		
+		
+		// --- 7. Todos los productos de usuarios llamados Jose que valgan 100 pesos-- //
+			
+		List<Producto> lista;
+		
+		lista = s.createCriteria(Producto.class)
+				.createAlias("usuarioVendedor", "vendedor")  //creo un alias para poder traer el nombre del vendedor
+				.add(Restrictions.and(Restrictions.eq("vendedor.nombre", "Jose"), Restrictions.eq("precio", 100d)))	
+				.list();
+		
+		assertThat(lista).hasSize(1);  //hay un solo producto publicado por Jose y que vale $100.00 
+
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testProducto8() {
+		
+		//creo un objeto producto
+		Producto producto1 = new Producto();
+		producto1.setPrecio(100d);
+		producto1.setTitulo("Tv");
+		producto1.setDescripcion("32 pulgadas");
+		producto1.setCantidad(8);
+		
+		//creo otro objeto producto
+		Producto producto2 = new Producto();
+		producto2.setPrecio(500d);
+		producto2.setTitulo("Tv");
+		producto2.setDescripcion("25 pulgadas");
+		producto2.setCantidad(2);
+		
+		//creo un objeto usuario
+		UsuarioVendedorComprador usuario1 = new UsuarioVendedorComprador();
+		usuario1.setNombre("Jose");
+		usuario1.setApellido("Perez");
+		usuario1.setEdad(30);
+		
+		//creo otro objeto usuario
+		UsuarioVendedorComprador usuario2 = new UsuarioVendedorComprador();
+		usuario2.setNombre("Pedro");
+		usuario2.setApellido("Rodriguez");
+		usuario2.setEdad(40);
+		
+		//creo un objeto categoria
+		Categoria categoria1 = new Categoria();
+		categoria1.setNombreCategoria("electronica");
+		
+		//creo un objeto oferta
+		Oferta oferta1 = new Oferta();
+		oferta1.setCantidad(1);
+		
+		//creo un objeto oferta
+		Oferta oferta2 = new Oferta();
+		oferta2.setCantidad(3);
+
+		producto1.setUsuarioVendedor(usuario1);  			//al producto1 le seteo como vendedor al usuario1
+		producto2.setUsuarioVendedor(usuario1);  			//al producto2 le seteo como vendedor al usuario1
+		producto1.setCategoriaPerteneciente(categoria1); 	//al producto1 le seteo como categoriaPerteneciente la categoria1
+		producto2.setCategoriaPerteneciente(categoria1); 	//al producto2 le seteo como categoriaPerteneciente la categoria1
+		oferta1.setProductoOfertado(producto1);				//al objeto oferta1 le seteo como productoOfertado el producto1
+		oferta2.setProductoOfertado(producto2);				//al objeto oferta1 le seteo como productoOfertado el producto1
+		
+		oferta2.setUsuarioComprador(usuario2);				//la oferta2 es comprada por el usuario2
+
+		getSession().save(producto1);
+		getSession().save(producto2);
+		getSession().save(usuario1);
+		getSession().save(usuario2);
+		getSession().save(categoria1);
+		getSession().save(oferta1);
+		getSession().save(oferta2);
+
+		Session s = getSession();
+		
+		
+		// --- 8. Todas las ofertas (cantidad ?) hechas sobre un producto de un vendedor llamado Jose-- //
+		
+		// SIN TERMINAR //
+			
+		List<Producto> lista;
+		
+		lista = s.createCriteria(Producto.class)
+				.createAlias("usuarioVendedor", "vendedor")
+				.createAlias("ofertasDeProducto", "ofertas")
+				.add(Restrictions.eq("vendedor.nombre", "Jose"))
+				.list();
+		
+		assertThat(lista.get(0).getOfertasDeProducto());
+
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testProducto9() {
+		
+		//creo un objeto producto
+		Producto producto1 = new Producto();
+		producto1.setPrecio(100d);
+		producto1.setTitulo("Tv");
+		producto1.setDescripcion("32 pulgadas");
+		producto1.setCantidad(8);
+		
+		//creo otro objeto producto
+		Producto producto2 = new Producto();
+		producto2.setPrecio(500d);
+		producto2.setTitulo("Tv");
+		producto2.setDescripcion("25 pulgadas");
+		producto2.setCantidad(2);
+		
+		//creo un objeto usuario
+		UsuarioVendedorComprador usuario1 = new UsuarioVendedorComprador();
+		usuario1.setNombre("Jose");
+		usuario1.setApellido("Perez");
+		usuario1.setEdad(30);
+		
+		//creo otro objeto usuario
+		UsuarioVendedorComprador usuario2 = new UsuarioVendedorComprador();
+		usuario2.setNombre("Pedro");
+		usuario2.setApellido("Rodriguez");
+		usuario2.setEdad(40);
+		
+		//creo un objeto categoria
+		Categoria categoria1 = new Categoria();
+		categoria1.setNombreCategoria("electronica");
+		
+		//creo un objeto oferta
+		Oferta oferta1 = new Oferta();
+		oferta1.setCantidad(1);
+		
+		//creo un objeto oferta
+		Oferta oferta2 = new Oferta();
+		oferta2.setCantidad(3);
+
+		producto1.setUsuarioVendedor(usuario1);  			//al producto1 le seteo como vendedor al usuario1
+		producto2.setUsuarioVendedor(usuario1);  			//al producto2 le seteo como vendedor al usuario1
+		producto1.setCategoriaPerteneciente(categoria1); 	//al producto1 le seteo como categoriaPerteneciente la categoria1
+		producto2.setCategoriaPerteneciente(categoria1); 	//al producto2 le seteo como categoriaPerteneciente la categoria1
+		oferta1.setProductoOfertado(producto1);				//al objeto oferta1 le seteo como productoOfertado el producto1
+		oferta2.setProductoOfertado(producto2);				//al objeto oferta1 le seteo como productoOfertado el producto1
+		
+		oferta2.setUsuarioComprador(usuario2);				//la oferta2 es comprada por el usuario2
+
+		getSession().save(producto1);
+		getSession().save(producto2);
+		getSession().save(usuario1);
+		getSession().save(usuario2);
+		getSession().save(categoria1);
+		getSession().save(oferta1);
+		getSession().save(oferta2);
+
+		Session s = getSession();
+		
+		
+		// --- 9. Todas las ofertas de la categoria Electronica-- //
+		// se suma la cantidad ??//
+		
+			
+		List<Producto> lista;
+		
+		lista = s.createCriteria(Producto.class)
+				.createAlias("categoriaPerteneciente", "categoria")
+				.add(Restrictions.eq("categoria.nombreCategoria", "electronica"))
+				.list();
+		
+		
+		assertThat(lista).hasSize(2);  //los prodocutos de la categoria electronica son 2
+
+	}
 
 
 
